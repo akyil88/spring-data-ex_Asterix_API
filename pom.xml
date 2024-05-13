@@ -14,7 +14,7 @@
     <name>spring-data-ex_Asterix API</name>
     <description>spring-data-ex_Asterix API</description>
     <properties>
-        <java.version>21</java.version>
+        <java.version>22</java.version>
     </properties>
     <dependencies>
         <dependency>

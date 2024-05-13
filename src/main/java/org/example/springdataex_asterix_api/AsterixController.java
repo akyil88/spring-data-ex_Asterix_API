@@ -6,36 +6,38 @@ import java.util.List;
 @RequestMapping("/asterix")
 public class AsterixController {
     private final CharacterRepo characterRepo;
+    private final IdService idService;
 
-    public AsterixController(CharacterRepo characterRepo) {
+    public AsterixController(CharacterRepo characterRepo, IdService idService) {
         this.characterRepo = characterRepo;
+        this.idService = idService;
     }
 
 
     @GetMapping("/characters")
-    public List<Character> sayHello() {
-        return List.of(
-                new Character("1", "Asterix", 35, "Krieger"),
-                new Character("2", "Obelix", 35, "Lieferant"),
-                new Character("3", "Miraculix", 60, "Druide"),
-                new Character("4", "Majestix", 60, "Häuptling"),
-                new Character("5", "Troubadix", 25, "Barden"),
-                new Character("6", "Gutemine", 35, "Häuptlingsfrau"),
-                new Character("7", "Idefix", 5, "Hund"),
-                new Character("8", "Geriatrix", 70, "Rentner"),
-                new Character("9", "Automatix", 35, "Schmied"),
-                new Character("10", "Grockelix", 35, "Fischer")
-        );
+    public List<Character> findCharacters(@RequestParam(defaultValue = "1000") int maxAge) {
+        return characterRepo.findByAgeLessThanEqual(maxAge);
     }
 
-    @PostMapping("/greet")
-    public String greet(@RequestParam String name) {
-        return "Hello, " + name + "!";
+    @GetMapping("/characters/{id}")
+    public Character findCharacterById(@PathVariable String id) {
+        return characterRepo.findById(id).orElseThrow();
     }
 
-    @DeleteMapping("/remove/{id}")
-    public String removeItem(@PathVariable int id) {
-        // Code zum Löschen eines Elements mit der ID
-        return "Item with ID " + id + " removed successfully.";
+    @GetMapping("/characters/{id}/delete")
+    public String findAndDeleteCharacterById(@PathVariable String id) {
+        characterRepo.deleteById(id);
+        return "success";
     }
+
+    @PutMapping("/characters/{id}/update")
+    public Character updateCharacterById(@PathVariable String id, @RequestBody NewCharacterDto updatedCharacter) {
+        return characterRepo.save(new Character(id, updatedCharacter.name(), updatedCharacter.age(), updatedCharacter.profession()));
+    }
+
+    @PostMapping("/characters/add")
+    public Character addCharacter(@RequestBody NewCharacterDto newCharacter) {
+        return characterRepo.save(new Character(idService.randomId(), newCharacter.name(), newCharacter.age(), newCharacter.profession()));
+    }
+
 }
