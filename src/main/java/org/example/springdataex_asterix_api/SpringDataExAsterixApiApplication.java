@@ -5,9 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class SpringDataExAsterixApiApplication {
-
     public static void main(String[] args) {
-        SpringApplication.run(SpringDataExAsterixApiApplication.class, args);
-    }
-
+    SpringApplication.run(SpringDataExAsterixApiApplication.class, args);
+}
 }
